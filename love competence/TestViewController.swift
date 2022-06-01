@@ -9,24 +9,12 @@ import UIKit
 
 class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataSource {
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return answers.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = answerTableView.dequeueReusableCell(withIdentifier: "answerTableViewCell", for: indexPath)
-        
-        cell.textLabel?.text = answers[indexPath.row]
-        
-        return cell
-    }
-    
     @IBOutlet weak var answerTableView: UITableView!
     
     var questionArray = [String]()
     var nowNumber: Int = 0
     
-    let answers = ["あ"]
+    let answers = ["完全に当てはまる","やや当てはまる","どちらとも言えない","ほとんど当てはまらない","全く当てはまらない"]
     
     @IBOutlet var question: UILabel!
     @IBOutlet var nowNumberLabel: UILabel!
@@ -54,12 +42,22 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     }
     
     @IBAction func nextButton(){
+        //現在の問題をquestionArayから取り除く
         questionArray.remove(at: 0)
+        
+        //tableViewのハイライト状態を解除
+        func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+            {
+                tableView.deselectRow(at: indexPath, animated: true)
+
+            }
         
         if questionArray.count == 0 {
             performSegueToResult()
         } else{
+            
         choiceQuestion()
+            
     }
     }
     
@@ -67,14 +65,30 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         
     }
     
+    //次の問題を表示
     func choiceQuestion(){
         question.text = questionArray[0]
         nowNumber += 1
         nowNumberLabel.text = String(nowNumber)+"/10"
     }
     
+    //結果画面への遷移
     func performSegueToResult(){
         performSegue(withIdentifier: "toResultView", sender: nil)
+    }
+    
+    //tableViewのセルの数を指定（この場合はanswersの中の文字列の数）
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return answers.count
+    }
+    
+    //tableViewに表示する内容を指定（この場合はanswersの中身）
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = answerTableView.dequeueReusableCell(withIdentifier: "answerTableViewCell", for: indexPath)
+        
+        cell.textLabel?.text = answers[indexPath.row]
+        
+        return cell
     }
 
     /*

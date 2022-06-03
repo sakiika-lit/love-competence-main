@@ -13,6 +13,10 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     
     var questionArray = [String]()
     var nowNumber: Int = 0
+    var scoreQ4: Int = 0
+    var scoreQ5: Int = 0
+    var scoreQ9: Int = 0
+    var scoreQ10: Int = 0
     
     let answers = ["完全に当てはまる","やや当てはまる","どちらとも言えない","ほとんど当てはまらない","全く当てはまらない"]
     
@@ -36,40 +40,124 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         questionArray.append("形式や伝統を重視し\n型破りなことはあまりしない")
         questionArray.append("あまり深く考えずに\n行動に移る性格")
         questionArray.append("ストレスや不安を感じるより\n落ち着いていることが多い")
+        questionArray.append("結果が表示されます")
         
         choiceQuestion()
 
     }
     
     @IBAction func nextButton(){
-        //現在の問題をquestionArayから取り除く
-        questionArray.remove(at: 0)
-        
-        //tableViewのハイライト状態を解除
-        func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
-            {
-                tableView.deselectRow(at: indexPath, animated: true)
 
-            }
-        
-        if questionArray.count == 0 {
+        print("Q4\(scoreQ4)")
+        print("Q5\(scoreQ5)")
+        print("Q9\(scoreQ9)")
+        print("Q10\(scoreQ10)")
+            
+        //もし最後の問題になったら
+        if questionArray.count == 1{
             performSegueToResult()
-        } else{
-            
-        choiceQuestion()
-            
-    }
+        }else if nowNumber == 4 && scoreQ4 == 0{
+            showAlert()
+        }else if nowNumber == 5 && scoreQ5 == 0{
+            showAlert()
+        }else if nowNumber == 9 && scoreQ9 == 0{
+            showAlert()
+        }else if nowNumber == 10 && scoreQ10 == 0{
+            showAlert()
+        }else{
+//            //現在の問題をquestionArayから取り除く
+//            questionArray.remove(at: 0)
+            choiceQuestion()
+        }
     }
     
     @IBAction func backButton(){
+
+        nowNumber -= 1
+        nowNumberLabel.text = String(nowNumber)+"/10"
+    }
+
+    //選択されているセルの情報をコンソールに表示
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
+
+        //tableViewのハイライト状態を解除
+        tableView.deselectRow(at: indexPath, animated: true)
         
+        //4問目のスコア計算
+        if nowNumber == 4{
+            if answers[indexPath.row] == "全く当てはまらない"{
+                scoreQ4 = 1
+           }else if answers[indexPath.row] == "ほとんど当てはまらない"{
+                scoreQ4 = 2
+           }else if answers[indexPath.row] == "どちらとも言えない"{
+                scoreQ4 = 3
+           }else if answers[indexPath.row] == "やや当てはまる"{
+                scoreQ4 = 4
+           }else if answers[indexPath.row] == "完全に当てはまる"{
+                scoreQ4 = 5
+           }
+            
+        }else if nowNumber == 5{
+            if answers[indexPath.row] == "全く当てはまらない"{
+                scoreQ5 = 1
+           }else if answers[indexPath.row] == "ほとんど当てはまらない"{
+                scoreQ5 = 2
+           }else if answers[indexPath.row] == "どちらとも言えない"{
+                scoreQ5 = 3
+           }else if answers[indexPath.row] == "やや当てはまる"{
+                scoreQ5 = 4
+           }else if answers[indexPath.row] == "完全に当てはまる"{
+                scoreQ5 = 5
+           }
+            
+        }else if nowNumber == 9{
+            if answers[indexPath.row] == "全く当てはまらない"{
+                scoreQ9 = 5
+           }else if answers[indexPath.row] == "ほとんど当てはまらない"{
+                scoreQ9 = 4
+            }else if answers[indexPath.row] == "どちらとも言えない"{
+                scoreQ9 = 3
+           }else if answers[indexPath.row] == "やや当てはまる"{
+                scoreQ9 = 2
+           }else if answers[indexPath.row] == "完全に当てはまる"{
+                scoreQ9 = 1
+           }
+            
+        }else if nowNumber == 10{
+            if answers[indexPath.row] == "全く当てはまらない"{
+                scoreQ10 = 5
+           }else if answers[indexPath.row] == "ほとんど当てはまらない"{
+                scoreQ10 = 4
+           }else if answers[indexPath.row] == "どちらとも言えない"{
+                scoreQ10 = 3
+           }else if answers[indexPath.row] == "やや当てはまる"{
+                scoreQ10 = 2
+           }else if answers[indexPath.row] == "完全に当てはまる"{
+                scoreQ10 = 1
+           }
+        }
     }
     
     //次の問題を表示
     func choiceQuestion(){
+        questionArray.remove(at: 0)
         question.text = questionArray[0]
         nowNumber += 1
         nowNumberLabel.text = String(nowNumber)+"/10"
+    }
+    
+    func showAlert(){
+        let alert = UIAlertController(
+                title: "解答を選択してください",
+                message: "",
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(
+                title: "OK",
+                style: .default,
+                handler: nil
+            ))
+            present(alert, animated: true, completion: nil)
     }
     
     //結果画面への遷移

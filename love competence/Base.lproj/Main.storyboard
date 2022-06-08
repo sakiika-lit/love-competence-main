@@ -249,6 +249,9 @@
                                     <navigationItem id="Auv-Mg-wN6">
                                         <barButtonItem key="leftBarButtonItem" title="ホームへ戻る" id="Gfj-KQ-c0y">
                                             <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <connections>
+                                                <segue destination="lEj-Pz-eac" kind="show" id="fcM-oE-FGe"/>
+                                            </connections>
                                         </barButtonItem>
                                     </navigationItem>
                                 </items>

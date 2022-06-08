@@ -33,6 +33,9 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         answerTableView.dataSource = self
         answerTableView.delegate = self
         
+        nowNumber += 1
+        nowNumberLabel.text = String(nowNumber)+"/10"
+        questionArray.append("ここに問題が表示されます")
         questionArray.append("初対面の人と積極的に\n話すことができる")
         questionArray.append("他人の快適さや幸せを願い\n差別なく行動できる")
         questionArray.append("好奇心が強い性格で\nクリエイティブな活動が好き")
@@ -47,20 +50,17 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         choiceQuestion()
 
     }
-    
+   
     @IBAction func nextButton(){
 
+        print("now\(nowNumber)")
         print("Q4\(scoreQ4)")
         print("Q5\(scoreQ5)")
         print("Q9\(scoreQ9)")
         print("Q10\(scoreQ10)")
         print("otherScore\(otherScore)")
             
-        //もし最後の問題になったら
-        if questionArray.count == 1{
-            performSegueToResult()
-            
-        }else if nowNumber == 4 && scoreQ4 == 0{
+        if nowNumber == 4 && scoreQ4 == 0{
             showAlert()
         }else if nowNumber == 5 && scoreQ5 == 0{
             showAlert()
@@ -71,8 +71,13 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         }else if nowNumber != 4|5|9|10 && otherScore == 0{
             showAlert()
         }else{
-            questionArray.remove(at: 0)
+            nowNumber += 1
+            nowNumberLabel.text = String(nowNumber)+"/10"
+            if nowNumber == 11{
+                    performSegueToResult()
+            }else{
             choiceQuestion()
+            }
         }
     }
     
@@ -80,6 +85,8 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
 
         nowNumber -= 1
         nowNumberLabel.text = String(nowNumber)+"/10"
+        choiceQuestion()
+        
     }
 
     //選択されているセルの情報をコンソールに表示
@@ -167,10 +174,7 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     
     //次の問題を表示
     func choiceQuestion(){
-        
-        question.text = questionArray[0]
-        nowNumber += 1
-        nowNumberLabel.text = String(nowNumber)+"/10"
+        question.text = questionArray[nowNumber]
     }
     
     func showAlert(){

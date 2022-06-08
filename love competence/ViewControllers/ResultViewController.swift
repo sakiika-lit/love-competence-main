@@ -23,7 +23,7 @@ class ResultViewController: UIViewController {
     @IBOutlet var mental: UILabel!
     @IBOutlet var Total: UILabel!
     
-    let defaults: UserDefaults = UserDefaults.standard
+//    let defaults: UserDefaults = UserDefaults.standard
     let realm = try! Realm()
     
     override func viewDidLoad() {

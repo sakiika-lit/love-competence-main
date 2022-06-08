@@ -17,8 +17,11 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     var scoreQ5: Int = 0
     var scoreQ9: Int = 0
     var scoreQ10: Int = 0
+    var otherScore: Int = 0
     
     let answers = ["完全に当てはまる","やや当てはまる","どちらとも言えない","ほとんど当てはまらない","全く当てはまらない"]
+    
+    let defaults: UserDefaults = UserDefaults.standard
     
     @IBOutlet var question: UILabel!
     @IBOutlet var nowNumberLabel: UILabel!
@@ -40,7 +43,6 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         questionArray.append("形式や伝統を重視し\n型破りなことはあまりしない")
         questionArray.append("あまり深く考えずに\n行動に移る性格")
         questionArray.append("ストレスや不安を感じるより\n落ち着いていることが多い")
-        questionArray.append("結果が表示されます")
         
         choiceQuestion()
 
@@ -52,10 +54,12 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         print("Q5\(scoreQ5)")
         print("Q9\(scoreQ9)")
         print("Q10\(scoreQ10)")
+        print("otherScore\(otherScore)")
             
         //もし最後の問題になったら
         if questionArray.count == 1{
             performSegueToResult()
+            
         }else if nowNumber == 4 && scoreQ4 == 0{
             showAlert()
         }else if nowNumber == 5 && scoreQ5 == 0{
@@ -64,9 +68,10 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             showAlert()
         }else if nowNumber == 10 && scoreQ10 == 0{
             showAlert()
+        }else if nowNumber != 4|5|9|10 && otherScore == 0{
+            showAlert()
         }else{
-//            //現在の問題をquestionArayから取り除く
-//            questionArray.remove(at: 0)
+            questionArray.remove(at: 0)
             choiceQuestion()
         }
     }
@@ -84,7 +89,9 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         tableView.deselectRow(at: indexPath, animated: true)
         
         //4問目のスコア計算
-        if nowNumber == 4{
+        switch nowNumber {
+        case 4:
+           otherScore = 1
             if answers[indexPath.row] == "全く当てはまらない"{
                 scoreQ4 = 1
            }else if answers[indexPath.row] == "ほとんど当てはまらない"{
@@ -97,7 +104,8 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                 scoreQ4 = 5
            }
             
-        }else if nowNumber == 5{
+        case 5:
+            otherScore = 1
             if answers[indexPath.row] == "全く当てはまらない"{
                 scoreQ5 = 1
            }else if answers[indexPath.row] == "ほとんど当てはまらない"{
@@ -110,7 +118,9 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                 scoreQ5 = 5
            }
             
-        }else if nowNumber == 9{
+
+        case 9:
+            otherScore = 1
             if answers[indexPath.row] == "全く当てはまらない"{
                 scoreQ9 = 5
            }else if answers[indexPath.row] == "ほとんど当てはまらない"{
@@ -123,7 +133,8 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                 scoreQ9 = 1
            }
             
-        }else if nowNumber == 10{
+        case 10:
+            otherScore = 1
             if answers[indexPath.row] == "全く当てはまらない"{
                 scoreQ10 = 5
            }else if answers[indexPath.row] == "ほとんど当てはまらない"{
@@ -135,12 +146,28 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
            }else if answers[indexPath.row] == "完全に当てはまる"{
                 scoreQ10 = 1
            }
+            
+        case 1|2|3|6|7|8:
+            if answers[indexPath.row] == "全く当てはまらない"{
+                otherScore = 1
+           }else if answers[indexPath.row] == "ほとんど当てはまらない"{
+                otherScore = 1
+           }else if answers[indexPath.row] == "どちらとも言えない"{
+                otherScore = 1
+           }else if answers[indexPath.row] == "やや当てはまる"{
+                otherScore = 1
+           }else if answers[indexPath.row] == "完全に当てはまる"{
+                otherScore = 1
+           }
+    
+        default:
+            otherScore = 2
         }
     }
     
     //次の問題を表示
     func choiceQuestion(){
-        questionArray.remove(at: 0)
+        
         question.text = questionArray[0]
         nowNumber += 1
         nowNumberLabel.text = String(nowNumber)+"/10"
@@ -163,6 +190,16 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     //結果画面への遷移
     func performSegueToResult(){
         performSegue(withIdentifier: "toResultView", sender: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+            if segue.identifier == "toResultView" {
+                let nextVC = segue.destination as! ResultViewController
+                nextVC.scoreQ4 = scoreQ4.self
+                nextVC.scoreQ5 = scoreQ5.self
+                nextVC.scoreQ9 = scoreQ9.self
+                nextVC.scoreQ10 = scoreQ10.self
+            }
     }
     
     //tableViewのセルの数を指定（この場合はanswersの中の文字列の数）

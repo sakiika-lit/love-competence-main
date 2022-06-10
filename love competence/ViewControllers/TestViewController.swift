@@ -55,6 +55,23 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         choiceQuestion()
     }
    
+    //結果画面への遷移
+    func performSegueToResult(){
+        performSegue(withIdentifier: "toResultView", sender: nil)
+    }
+    
+    //画面遷移時に、ResultViewConにスコア情報を渡す
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "toResultView"{
+                let nextVC = segue.destination as! ResultViewController
+
+            nextVC.con = con.self
+            nextVC.men = men.self
+            nextVC.total = total.self
+        }
+    }
+    
     @IBAction func nextButton(){
 
         print("Q4_\(scoreQ4)")
@@ -71,22 +88,24 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             
             if nowNumber == 11{
                 nowNumberLabel.text = "10/10"
+                //次の画面に遷移
                 performSegueToResult()
+                //スコアを計算
                 calculateConscience()
                 calculateMental()
                 calculateTotal()
                 
-                if total != 110{
-                    
-                    //データをrealmに保存
-                    let user = Score()
-                          
-                    user.createdAt = Date()
-                    user.totalScore = total
-                    try! realm.write {
-                        realm.add(user)
+                //realmにuserのスコアを登録
+                let user = Score()
+                try! realm.write {
+                    realm.add(user)
                     }
-                }
+                          
+//                user.createdAt = Date()
+//                user.totalScore = total
+//                user.finalCon = con
+//                user.finalMen = men
+                
             }else{
                 choiceQuestion()
                 otherScore = 0
@@ -115,7 +134,6 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         nowNumber -= 1
         nowNumberLabel.text = String(nowNumber)+"/10"
         choiceQuestion()
-        
     }
 
     //セルが選択された時の処理
@@ -209,22 +227,6 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                 handler: nil
             ))
             present(alert, animated: true, completion: nil)
-    }
-    
-    //結果画面への遷移
-    func performSegueToResult(){
-        performSegue(withIdentifier: "toResultView", sender: nil)
-    }
-    
-    //画面遷移時に、ResultViewConにスコア情報を渡す
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-            if segue.identifier == "toResultView" {
-                let nextVC = segue.destination as! ResultViewController
-
-                nextVC.con = con.self
-                nextVC.men = men.self
-                nextVC.total = total.self
-            }
     }
     
     //tableViewのセルの数を指定（この場合はanswersの中の文字列の数）

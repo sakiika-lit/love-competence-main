@@ -11,5 +11,6 @@ import RealmSwift
 class Score: Object {
     @objc dynamic var createdAt = Date()
     @objc dynamic var totalScore: Double = 0
-
+    @objc dynamic var finalCon: Double = 0
+    @objc dynamic var finalMen: Double = 0
 }

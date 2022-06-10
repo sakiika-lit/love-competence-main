@@ -12,7 +12,7 @@
         <!--Record View Controller-->
         <scene sceneID="e25-pM-2dJ">
             <objects>
-                <viewController modalPresentationStyle="fullScreen" id="lEj-Pz-eac" customClass="RecordViewController" customModule="love_competence" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="RecordViewController" modalPresentationStyle="fullScreen" id="lEj-Pz-eac" customClass="RecordViewController" customModule="love_competence" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="sJh-wR-zYf">
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -67,7 +67,7 @@
                                     <color key="baseBackgroundColor" red="0.85098040100000005" green="0.44313728810000003" blue="0.50980395079999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 </buttonConfiguration>
                                 <connections>
-                                    <segue destination="k6J-LK-iRV" kind="show" id="BqO-gt-oSc"/>
+                                    <segue destination="k6J-LK-iRV" kind="show" id="cv1-jn-WST"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -86,9 +86,12 @@
                             <constraint firstItem="gpu-FU-f7f" firstAttribute="centerX" secondItem="sJh-wR-zYf" secondAttribute="centerX" id="wyc-ka-Pbx"/>
                         </constraints>
                     </view>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" id="mwt-Sf-Kpj"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="recordTableView" destination="gpu-FU-f7f" id="kw1-92-BHw"/>
+                        <outlet property="recordTableView" destination="gpu-FU-f7f" id="MJB-kJ-nli"/>
+                        <segue destination="Wsr-Eo-9mk" kind="show" identifier="toResultView" id="3Yq-nQ-ldS"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IL9-sG-XuR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -98,7 +101,7 @@
         <!--Test View Controller-->
         <scene sceneID="i9e-vk-kon">
             <objects>
-                <viewController modalPresentationStyle="fullScreen" id="k6J-LK-iRV" customClass="TestViewController" customModule="love_competence" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TestViewController" modalPresentationStyle="fullScreen" id="k6J-LK-iRV" customClass="TestViewController" customModule="love_competence" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="C97-mu-MxK" customClass="View">
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -121,6 +124,9 @@
                                     <navigationItem id="8jk-AL-lBd">
                                         <barButtonItem key="leftBarButtonItem" title="ホームへ戻る" id="5cG-6z-9qG">
                                             <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <connections>
+                                                <segue destination="lEj-Pz-eac" kind="show" id="qbv-pW-F0g"/>
+                                            </connections>
                                         </barButtonItem>
                                     </navigationItem>
                                 </items>
@@ -257,19 +263,19 @@
                                 </items>
                             </navigationBar>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="誠実性" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BEq-RR-nrU">
-                                <rect key="frame" x="29" y="438" width="52" height="21"/>
+                                <rect key="frame" x="29" y="389" width="52" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="メンタルの安定性" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PdO-k4-4Tm">
-                                <rect key="frame" x="29" y="549" width="139" height="21"/>
+                                <rect key="frame" x="29" y="500" width="139" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0%" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FYY-n7-Zcg">
-                                <rect key="frame" x="315" y="438" width="26" height="21"/>
+                                <rect key="frame" x="315" y="389" width="26" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -314,7 +320,7 @@
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="x3f-Sw-gbd">
-                                <rect key="frame" x="23.666666666666657" y="579" width="343" height="5"/>
+                                <rect key="frame" x="23.666666666666657" y="530" width="343" height="5"/>
                                 <color key="backgroundColor" red="0.91372549530000002" green="0.41568624970000001" blue="0.50588238240000005" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="x3f-Sw-gbd" secondAttribute="height" multiplier="343:5" id="I4r-9H-M0F"/>
@@ -325,7 +331,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kjp-mi-fl0">
-                                <rect key="frame" x="23.666666666666657" y="468" width="343" height="5"/>
+                                <rect key="frame" x="23.666666666666657" y="419" width="343" height="5"/>
                                 <color key="backgroundColor" red="0.91372549530000002" green="0.41568624970000001" blue="0.50588238240000005" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="5" id="259-B7-l2q"/>
@@ -336,7 +342,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0%" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Klp-aG-dG4">
-                                <rect key="frame" x="315" y="549" width="26" height="21"/>
+                                <rect key="frame" x="315" y="500" width="26" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -384,6 +390,10 @@
             <point key="canvasLocation" x="5038.4615384615381" y="95.260663507109001"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="SpO-lf-Xpx"/>
+        <segue reference="fcM-oE-FGe"/>
+    </inferredMetricsTieBreakers>
     <color key="tintColor" systemColor="opaqueSeparatorColor"/>
     <resources>
         <image name="arrow.left" catalog="system" width="128" height="98"/>

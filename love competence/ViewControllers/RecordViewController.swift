@@ -8,7 +8,7 @@
 import UIKit
 import RealmSwift
 
-class RecordViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class RecordViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     @IBOutlet weak var recordTableView: UITableView!
     
@@ -22,6 +22,7 @@ class RecordViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         //userScoreという箱を作り、その中にrealm内のオブジェクトを入れる（確認用）
         let userScore = realm.objects(Score.self)
+//            .sorted(byKeyPath: "id", ascending: false)
         //userScoreに入ったデータをコンソールに表示
         print("データ\(userScore)")
     }
@@ -32,13 +33,13 @@ class RecordViewController: UIViewController, UITableViewDelegate, UITableViewDa
         recordTableView.reloadData()
     }
    
+    //セルの数を指定
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let userScore = realm.objects(Score.self)
-        
-        //セルの数を指定
         return userScore.count
     }
     
+    //セル内の情報の処理
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //セルを生成
         let cell: UITableViewCell = recordTableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
@@ -46,7 +47,16 @@ class RecordViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let userScore = realm.objects(Score.self)
         
         //セル内の情報を指定、この場合はuserDataの中のcreatedAtとtotalScoreをそれぞれ指定
-        cell.textLabel!.text = "\(userScore[indexPath.row].createdAt)"
+//        cell.textLabel!.text = "\(userScore[indexPath.row].createdAt)"
+//
+        
+
+        let dt = userScore[indexPath.row].createdAt
+        let now = DateFormatter()
+
+        now.dateFormat = "yyyy/MM/dd HH:mm"
+        
+        cell.textLabel!.text = now.string(from: dt)
         cell.detailTextLabel!.text = String("\(userScore[indexPath.row].totalScore)%")
         
         //セル内のフォントサイズを指定
@@ -66,24 +76,20 @@ class RecordViewController: UIViewController, UITableViewDelegate, UITableViewDa
             completionHandler(true)
         }
 
-        let updateAction = UIContextualAction(style: .normal, title: "Update") { (action, view, completionHandler) in
-
-            self.TransitionUpdateView(indexPath: indexPath.row)
-
-            completionHandler(true)
-        }
-        return UISwipeActionsConfiguration(actions: [deleteAction, updateAction])
+        return UISwipeActionsConfiguration(actions: [deleteAction])
     }
     
+    //cellとrealmの削除
     func DeleteRecordRealm(indexPath: Int){
         let realm = try! Realm()
-        let userScore = realm.objects(Score.self)
+        let targetScore = realm.objects(Score.self)
         
         try! realm.write{
-            realm.delete(self.userScore[indexPath])
+            realm.delete(targetScore)
         }
         
         self.recordTableView.reloadData()
     }
+    
 }
 

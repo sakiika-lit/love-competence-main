@@ -375,6 +375,7 @@
                     <connections>
                         <outlet property="Total" destination="Uxi-5e-n8E" id="fQy-cZ-aPd"/>
                         <outlet property="conscience" destination="FYY-n7-Zcg" id="I7q-wW-qQf"/>
+                        <outlet property="crown" destination="9v3-n7-V6c" id="iqh-tX-pfL"/>
                         <outlet property="mental" destination="Klp-aG-dG4" id="eFK-bu-udG"/>
                     </connections>
                 </viewController>

@@ -10,9 +10,6 @@ import RealmSwift
 
 class Score: Object {
     @objc dynamic var createdAt = Date()
-    @objc dynamic var totalScore = 0
-    
-//    override static func primaryKey() -> String? {
-//        return "id"
-//    }
+    @objc dynamic var totalScore: Double = 0
+
 }

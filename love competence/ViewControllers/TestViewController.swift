@@ -6,25 +6,30 @@
 //
 
 import UIKit
+import RealmSwift
 
 class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataSource {
-    
-    @IBOutlet weak var answerTableView: UITableView!
-    
+
     var questionArray = [String]()
     var nowNumber: Int = 0
-    var scoreQ4: Int = 0
-    var scoreQ5: Int = 0
-    var scoreQ9: Int = 0
-    var scoreQ10: Int = 0
+    var scoreQ4: Double = 0
+    var scoreQ5: Double = 0
+    var scoreQ9: Double = 0
+    var scoreQ10: Double = 0
     var otherScore: Int = 0
+    var none: Int = 0
+    
+    var con: Double = 0
+    var men: Double = 0
+    var total: Double = 0
     
     let answers = ["完全に当てはまる","やや当てはまる","どちらとも言えない","ほとんど当てはまらない","全く当てはまらない"]
-    
     let defaults: UserDefaults = UserDefaults.standard
+    let realm = try! Realm()
     
     @IBOutlet var question: UILabel!
     @IBOutlet var nowNumberLabel: UILabel!
+    @IBOutlet weak var answerTableView: UITableView!
    
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,37 +53,61 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         questionArray.append("ストレスや不安を感じるより\n落ち着いていることが多い")
         
         choiceQuestion()
-
     }
    
     @IBAction func nextButton(){
 
-        print("now\(nowNumber)")
-        print("Q4\(scoreQ4)")
-        print("Q5\(scoreQ5)")
-        print("Q9\(scoreQ9)")
-        print("Q10\(scoreQ10)")
+        print("Q4_\(scoreQ4)")
+        print("Q5_\(scoreQ5)")
+        print("Q9_\(scoreQ9)")
+        print("Q10_\(scoreQ10)")
         print("otherScore\(otherScore)")
-            
-        if nowNumber == 4 && scoreQ4 == 0{
-            showAlert()
-        }else if nowNumber == 5 && scoreQ5 == 0{
-            showAlert()
-        }else if nowNumber == 9 && scoreQ9 == 0{
-            showAlert()
-        }else if nowNumber == 10 && scoreQ10 == 0{
-            showAlert()
-        }else if nowNumber != 4|5|9|10 && otherScore == 0{
+        
+        if otherScore == 0{
             showAlert()
         }else{
             nowNumber += 1
             nowNumberLabel.text = String(nowNumber)+"/10"
+            
             if nowNumber == 11{
-                    performSegueToResult()
+                nowNumberLabel.text = "10/10"
+                performSegueToResult()
+                calculateConscience()
+                calculateMental()
+                calculateTotal()
+                
+                if total != 110{
+                    
+                    //データをrealmに保存
+                    let user = Score()
+                          
+                    user.createdAt = Date()
+                    user.totalScore = total
+                    try! realm.write {
+                        realm.add(user)
+                    }
+                }
             }else{
-            choiceQuestion()
+                choiceQuestion()
+                otherScore = 0
+                print("otherScore\(otherScore)")
             }
         }
+    }
+    
+    func calculateConscience(){
+        con = Double((scoreQ4 + scoreQ9) / 8 * 100)
+    }
+
+    func calculateMental(){
+        men = Double((scoreQ5 + scoreQ10) / 8 * 100)
+    }
+
+    func calculateTotal(){
+        total = (con + men) / 2
+        print("誠実性\(con)")
+        print("メンタル\(men)")
+        print("適性\(total)")
     }
     
     @IBAction func backButton(){
@@ -89,86 +118,76 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         
     }
 
-    //選択されているセルの情報をコンソールに表示
+    //セルが選択された時の処理
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
 
         //tableViewのハイライト状態を解除
         tableView.deselectRow(at: indexPath, animated: true)
         
-        //4問目のスコア計算
+        
+        otherScore = 1
+        print("otherScore\(otherScore)")
+        
+        //4,5,9,10問目のスコア計算
         switch nowNumber {
         case 4:
            otherScore = 1
             if answers[indexPath.row] == "全く当てはまらない"{
-                scoreQ4 = 1
+                scoreQ4 = 0
            }else if answers[indexPath.row] == "ほとんど当てはまらない"{
-                scoreQ4 = 2
+                scoreQ4 = 1
            }else if answers[indexPath.row] == "どちらとも言えない"{
-                scoreQ4 = 3
+                scoreQ4 = 2
            }else if answers[indexPath.row] == "やや当てはまる"{
-                scoreQ4 = 4
+                scoreQ4 = 3
            }else if answers[indexPath.row] == "完全に当てはまる"{
-                scoreQ4 = 5
+                scoreQ4 = 4
            }
             
         case 5:
             otherScore = 1
             if answers[indexPath.row] == "全く当てはまらない"{
-                scoreQ5 = 1
+                scoreQ5 = 0
            }else if answers[indexPath.row] == "ほとんど当てはまらない"{
-                scoreQ5 = 2
+                scoreQ5 = 1
            }else if answers[indexPath.row] == "どちらとも言えない"{
-                scoreQ5 = 3
+                scoreQ5 = 2
            }else if answers[indexPath.row] == "やや当てはまる"{
-                scoreQ5 = 4
+                scoreQ5 = 3
            }else if answers[indexPath.row] == "完全に当てはまる"{
-                scoreQ5 = 5
+                scoreQ5 = 4
            }
             
 
         case 9:
             otherScore = 1
             if answers[indexPath.row] == "全く当てはまらない"{
-                scoreQ9 = 5
-           }else if answers[indexPath.row] == "ほとんど当てはまらない"{
                 scoreQ9 = 4
-            }else if answers[indexPath.row] == "どちらとも言えない"{
+           }else if answers[indexPath.row] == "ほとんど当てはまらない"{
                 scoreQ9 = 3
-           }else if answers[indexPath.row] == "やや当てはまる"{
+           }else if answers[indexPath.row] == "どちらとも言えない"{
                 scoreQ9 = 2
-           }else if answers[indexPath.row] == "完全に当てはまる"{
+           }else if answers[indexPath.row] == "やや当てはまる"{
                 scoreQ9 = 1
+           }else if answers[indexPath.row] == "完全に当てはまる"{
+                scoreQ9 = 0
            }
             
         case 10:
             otherScore = 1
             if answers[indexPath.row] == "全く当てはまらない"{
-                scoreQ10 = 5
-           }else if answers[indexPath.row] == "ほとんど当てはまらない"{
                 scoreQ10 = 4
-           }else if answers[indexPath.row] == "どちらとも言えない"{
-                scoreQ10 = 3
-           }else if answers[indexPath.row] == "やや当てはまる"{
-                scoreQ10 = 2
-           }else if answers[indexPath.row] == "完全に当てはまる"{
-                scoreQ10 = 1
-           }
-            
-        case 1|2|3|6|7|8:
-            if answers[indexPath.row] == "全く当てはまらない"{
-                otherScore = 1
            }else if answers[indexPath.row] == "ほとんど当てはまらない"{
-                otherScore = 1
+                scoreQ10 = 3
            }else if answers[indexPath.row] == "どちらとも言えない"{
-                otherScore = 1
+                scoreQ10 = 2
            }else if answers[indexPath.row] == "やや当てはまる"{
-                otherScore = 1
+                scoreQ10 = 1
            }else if answers[indexPath.row] == "完全に当てはまる"{
-                otherScore = 1
+                scoreQ10 = 0
            }
-    
         default:
-            otherScore = 2
+            otherScore = 1
         }
     }
     
@@ -177,6 +196,7 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         question.text = questionArray[nowNumber]
     }
     
+    //アラート表示
     func showAlert(){
         let alert = UIAlertController(
                 title: "解答を選択してください",
@@ -196,13 +216,14 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         performSegue(withIdentifier: "toResultView", sender: nil)
     }
     
+    //画面遷移時に、ResultViewConにスコア情報を渡す
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
             if segue.identifier == "toResultView" {
                 let nextVC = segue.destination as! ResultViewController
-                nextVC.scoreQ4 = scoreQ4.self
-                nextVC.scoreQ5 = scoreQ5.self
-                nextVC.scoreQ9 = scoreQ9.self
-                nextVC.scoreQ10 = scoreQ10.self
+
+                nextVC.con = con.self
+                nextVC.men = men.self
+                nextVC.total = total.self
             }
     }
     
@@ -213,6 +234,7 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     
     //tableViewに表示する内容を指定（この場合はanswersの中身）
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = answerTableView.dequeueReusableCell(withIdentifier: "answerTableViewCell", for: indexPath)
         
         cell.textLabel?.text = answers[indexPath.row]

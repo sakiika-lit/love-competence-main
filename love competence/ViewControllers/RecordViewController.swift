@@ -13,7 +13,6 @@
         @IBOutlet weak var recordTableView: UITableView!
         
         let realm = try! Realm()
-        var conToSend: Int = 0
         
         override func viewDidLoad() {
             super.viewDidLoad()
@@ -21,8 +20,8 @@
 
             recordTableView.rowHeight = 70
             
-            //userScoreという箱を作り、その中にrealm内のオブジェクトを入れる（確認用）
-            let userScore = realm.objects(Score.self).sorted(byKeyPath: "createdAt", ascending: false)
+            //userScoreという箱を作り、その中にrealm内のオブジェクトを入れる
+            let userScore = realm.objects(Score.self)
             //userScoreに入ったデータをコンソールに表示
             print("データ\(userScore)")
         }
@@ -44,16 +43,15 @@
             //セルを生成
             let cell: UITableViewCell = recordTableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
             //セル内の情報が入った箱を指定、この場合はuserScoreを指定
-            let userScore = realm.objects(Score.self)
+            let userScore = realm.objects(Score.self).sorted(byKeyPath: "createdAt", ascending: false)
             
             //セル内の情報を指定
             let dt = userScore[indexPath.row].createdAt
-            let now = DateFormatter()
-
-            now.dateFormat = "yyyy/MM/dd HH:mm"
+            let savedDate = DateFormatter()
+            savedDate.dateFormat = DateFormatter.dateFormat(fromTemplate: "yyyyMMddHHmm", options: 0, locale: Locale(identifier: "ja_JP"))
             
-            cell.textLabel!.text = now.string(from: dt)
-            cell.detailTextLabel!.text = String("\(userScore[indexPath.row].totalScore)%")
+            cell.textLabel?.text = savedDate.string(from:dt)
+            cell.detailTextLabel!.text = String("\(Int(userScore[indexPath.row].totalScore))%")
             
             //セル内のフォントサイズを指定
             cell.textLabel?.font = UIFont.systemFont(ofSize: 18)
@@ -62,55 +60,54 @@
             return cell
         }
         
-    //    //resultViewに値渡す
-    //
-    //    override func prepare(for segue: UIStoryboardSegue, sender: Any?){
-    //
-    //        let sendingVC = segue.destination as! ResultViewController
-    //
-    //        sendingVC.con = Double(conToSend.self)
-    //        print(conToSend)
-    //    }
-        
         //セルが選択された時の処理
         func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
 
              //選択したセルの情報を取得
-            let userScore = realm.objects(Score.self)
+            let userScore = realm.objects(Score.self).sorted(byKeyPath: "createdAt", ascending: false)
 
-            //取得したセル内の情報を、ResultViewControllerに送るものの箱に入れる
+            //取得したセル内の"誠実性"データを"choosedCon"に入れる
             let choosedCon = userScore[indexPath.row].finalCon
-            conToSend = Int(choosedCon)
-            print(conToSend)
+            let choosedMen = userScore[indexPath.row].finalMen
+            let choosedTotal = userScore[indexPath.row].totalScore
 
             //resultViewに遷移
-            performSegue(withIdentifier: "toResultView", sender: nil)
+            let nextView = storyboard?.instantiateViewController(withIdentifier: "ResultViewController") as! ResultViewController
+            nextView.modalTransitionStyle = .crossDissolve
+            nextView.modalPresentationStyle = .fullScreen
+            
+            //遷移先のViewControllerに値を渡す
+            nextView.con = Double(choosedCon)
+            nextView.men = Double(choosedMen)
+            nextView.total = Double(choosedTotal)
+            
+            self.present(nextView, animated: true, completion: nil)
         }
         
         //TableViewを左スワイプした時の処理
-        func tableView(_ tableView: UITableView, trailingSwipeActionConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-
-            let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { (action, view, completionHandler) in
-
-                self.DeleteRecordRealm(indexPath: indexPath.row)
-
-                completionHandler(true)
-            }
-
-            return UISwipeActionsConfiguration(actions: [deleteAction])
-        }
+//        func tableView(_ tableView: UITableView, trailingSwipeActionConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+//
+//            let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { (action, view, completionHandler) in
+//
+//                self.DeleteRecordRealm(indexPath: indexPath.row)
+//
+//                completionHandler(true)
+//            }
+//
+//            return UISwipeActionsConfiguration(actions: [deleteAction])
+//        }
         
         //cellとrealmの削除
-        func DeleteRecordRealm(indexPath: Int){
-            let realm = try! Realm()
-            let targetScore = realm.objects(Score.self)
-            
-            try! realm.write{
-                realm.delete(targetScore)
-            }
-            
-            self.recordTableView.reloadData()
-        }
+//        func DeleteRecordRealm(indexPath: Int){
+//            let realm = try! Realm()
+//            let targetScore = realm.objects(Score.self)
+//
+//            try! realm.write{
+//                realm.delete(targetScore)
+//            }
+//
+//            self.recordTableView.reloadData()
+//        }
         
     }
 

@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import RealmSwift
 
 class ResultViewController: UIViewController {
   
@@ -33,10 +32,10 @@ class ResultViewController: UIViewController {
         print("誠実性\(con)")
         print("メンタル\(men)")
         print("適性\(total)")
-        
-        conscience.text = "\(con)%"
-        mental.text = "\(men)%"
-        Total.text = "\(total)%"
+               
+        conscience.text = "\(Int(con))%"
+        mental.text = "\(Int(men))%"
+        Total.text = "\(Int(total))%"
         
         if total <= 33{
             crown.tintColor = UIColor.brown

@@ -55,22 +55,18 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         choiceQuestion()
     }
    
-    //結果画面への遷移
-    func performSegueToResult(){
-        performSegue(withIdentifier: "toResultView", sender: nil)
-    }
-    
-    //画面遷移時に、ResultViewConにスコア情報を渡す
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        if segue.identifier == "toResultView"{
-                let nextVC = segue.destination as! ResultViewController
-
-            nextVC.con = con.self
-            nextVC.men = men.self
-            nextVC.total = total.self
-        }
-    }
+   
+//    //画面遷移時に、ResultViewConにスコア情報を渡す
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//
+//        if segue.identifier == "toResultView"{
+//                let nextVC = segue.destination as! ResultViewController
+//
+//            nextVC.con = con.self
+//            nextVC.men = men.self
+//            nextVC.total = total.self
+//        }
+//    }
     
     @IBAction func nextButton(){
 
@@ -88,8 +84,7 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             
             if nowNumber == 11{
                 nowNumberLabel.text = "10/10"
-                //次の画面に遷移
-                performSegueToResult()
+
                 //スコアを計算
                 calculateConscience()
                 calculateMental()
@@ -99,12 +94,12 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                 let user = Score()
                 try! realm.write {
                     realm.add(user)
-                    }
                           
-//                user.createdAt = Date()
-//                user.totalScore = total
-//                user.finalCon = con
-//                user.finalMen = men
+                user.createdAt = Date()
+                user.totalScore = total
+                user.finalCon = con
+                user.finalMen = men
+            }
                 
             }else{
                 choiceQuestion()
@@ -127,6 +122,18 @@ class TestViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         print("誠実性\(con)")
         print("メンタル\(men)")
         print("適性\(total)")
+        
+        //次の画面に遷移
+        let nextView = storyboard?.instantiateViewController(withIdentifier: "ResultViewController") as! ResultViewController
+        nextView.modalTransitionStyle = .crossDissolve
+        nextView.modalPresentationStyle = .fullScreen
+        
+        //遷移先のViewControllerに値を渡す
+        nextView.con = Double(con)
+        nextView.men = Double(men)
+        nextView.total = Double(total)
+        
+        self.present(nextView, animated: true, completion: nil)
     }
     
     @IBAction func backButton(){

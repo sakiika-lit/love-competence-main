@@ -17,6 +17,7 @@ class ResultViewController: UIViewController {
     @IBOutlet var mental: UILabel!
     @IBOutlet var Total: UILabel!
     @IBOutlet weak var crown: UIImageView!
+    @IBOutlet var anatano: UILabel!
     
     let defaults: UserDefaults = UserDefaults.standard
     
@@ -28,6 +29,8 @@ class ResultViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        anatano.adjustsFontSizeToFitWidth = true
         
         print("誠実性\(con)")
         print("メンタル\(men)")
